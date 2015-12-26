@@ -46,4 +46,4 @@ elif [ $* == *"--bzip2"* ]
 fi
 
 #Sync Backup
-lftp -e "mirror -R $localdir $remotedir" -u $user,$password $protocol://$host
+lftp -c "mirror -R $localdir $remotedir" -u $user,$password $protocol://$host
