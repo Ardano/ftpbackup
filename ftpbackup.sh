@@ -54,4 +54,8 @@ then
 fi
 
 #Sync Backup
-lftp -c "mirror -R $localdir $remotedir" -u $user,$password $protocol://$host
+if [[ $* == *"--nosync"* ]]
+    exit 0
+else
+    lftp -c "mirror -R $localdir $remotedir" -u $user,$password $protocol://$host
+fi
