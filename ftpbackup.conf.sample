@@ -1,0 +1,10 @@
+#!/bin/sh
+
+host="ftp.example.com"
+user="user"
+password="password"
+
+localdir="/Backup"
+remotedir="/Backup"
+
+source=( "/etc/source" "/var/log/source" )
