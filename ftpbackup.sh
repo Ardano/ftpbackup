@@ -6,7 +6,7 @@ cd $workdir
 
 if [ -e "$workdir/$(basename $0 .sh).conf" ]
 then
-    source "$workdir/$(basename $0 .sh).conf"
+    source $workdir/$(basename $0 .sh).conf
 elif [ -e "$workdir/$(basename $0 .sh).conf.sample" ]
 then
     echo "Please edit the sample config for your needs and move it to $(basename $0 .sh).conf"
@@ -31,7 +31,7 @@ if [ -z "$user" ]; then echo "The user is not configured."; exit 1; fi
 if [ -z "$password" ]; then echo "The password is not configured."; exit 1; fi
 if [ -z "$localdir" ]; then echo "The local directory is not configured."; exit 1; fi
 if [ -z "$remotedir" ]; then echo "The remote directory is not configured."; exit 1; fi
-if [ -z "$source" ]; then echo "The backup source(s) is/are not configured."; exit 1; fi
+if [ ${#source[@]} -eq 0 ]; then echo "The backup source(s) is/are not configured."; exit 1; fi
 
 #Create target directory
 date=$( date +%Y%m%d-%H%M%S )
