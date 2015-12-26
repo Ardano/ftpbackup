@@ -9,7 +9,7 @@ then
     source "$workdir/$(basename $0 .sh).conf"
 elif [ -e "$workdir/$(basename $0 .sh).conf.sample" ]
 then
-    echo "Please edit the config for your needs and move it to $(basename $0 .sh).conf"
+    echo "Please edit the sample config for your needs and move it to $(basename $0 .sh).conf"
 else
     echo "No config file found. Please create one in $(basename $0 .sh).conf"
 fi
@@ -17,10 +17,10 @@ fi
 #Check for Software and Variables
 command -v lftp > /dev/null 2>&1 || { echo >&2 "lftp is required, but it's not installed. Aborting"; exit 1; }
 
-if [ $* == "--gzip" ]
+if [[ $* == "--gzip" ]]
 then
     command -v pigz > /dev/null 2>&1 || { echo >&2 "pigz is required, but it's not installed. Aborting"; exit 1; }
-elif [ $* == "--bzip2" ]
+elif [[ $* == "--bzip2" ]]
 then
     command -v pbzip2 > /dev/null 2>&1 || { echo >&2 "pbzip2 is required, but it's not installed. Aborting"; exit 1; }
 fi
@@ -43,10 +43,10 @@ for i in "${source[@]}"; do
 done
 
 #Compression and Encryption
-if [ $* == *"--gzip"* ]
+if [[ $* == *"--gzip"* ]]
 then
     tar -cvf - $localdir/$date | pigz -c > $localdir/$date.tar.gz
-elif [ $* == *"--bzip2"* ]
+elif [[ $* == *"--bzip2"* ]]
 then
     tar -cvf - $localdir/$date | pbzip2 -c > $localdir/$date.tar.bz2
 fi
