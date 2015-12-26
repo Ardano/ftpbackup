@@ -45,11 +45,11 @@ done
 #Compression and Encryption
 if [[ $* == *"--gzip"* ]]
 then
-    tar -cvf - $localdir/$date | pigz -c > $localdir/$date.tar.gz
+    tar -cf - $localdir/$date | pigz -c > $localdir/$date.tar.gz
     rm -R $localdir/$date
 elif [[ $* == *"--bzip2"* ]]
 then
-    tar -cvf - $localdir/$date | pbzip2 -c > $localdir/$date.tar.bz2
+    tar -cf - $localdir/$date | pbzip2 -c > $localdir/$date.tar.bz2
     rm -R $localdir/$date
 fi
 
