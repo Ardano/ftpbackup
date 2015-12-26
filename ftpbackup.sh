@@ -22,6 +22,7 @@ elif [ $* == "--bzip2" ]
 fi
 
 ${host:?The host is not configured.}
+${protocol:?The protocol is not configured.}
 ${user:?The user is not configurted.}
 ${password:?The password is not configured.}
 ${localdir:?The local directory is not configured.}
@@ -45,4 +46,4 @@ elif [ $* == *"--bzip2"* ]
 fi
 
 #Sync Backup
-lftp -e "mirror -R $localdir $remotedir" -u $user,$password $host
+lftp -e "mirror -R $localdir $remotedir" -u $user,$password $protocol://$host

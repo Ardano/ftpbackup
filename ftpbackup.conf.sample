@@ -1,6 +1,7 @@
 #!/bin/sh
 
 host="ftp.example.com"
+protocol="ftps"
 user="user"
 password="password"
 
