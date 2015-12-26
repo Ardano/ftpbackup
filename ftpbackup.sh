@@ -25,13 +25,13 @@ then
     command -v pbzip2 > /dev/null 2>&1 || { echo >&2 "pbzip2 is required, but it's not installed. Aborting"; exit 1; }
 fi
 
-${host:?The host is not configured.}
-${protocol:?The protocol is not configured.}
-${user:?The user is not configurted.}
-${password:?The password is not configured.}
-${localdir:?The local directory is not configured.}
-${remotedir:?The remote directory is not configured.}
-${source:?The backup source(s) is/are not configured.}
+if [ -z "$host" ]; then echo "The host is not configured."; exit 1; fi
+if [ -z "$protocol" ]; then echo "The protocol is not configured."; exit 1; fi
+if [ -z "$user" ]; then echo "The user is not configured."; exit 1; fi
+if [ -z "$password" ]; then echo "The password is not configured."; exit 1; fi
+if [ -z "$localdir" ]; then echo "The local directory is not configured."; exit 1; fi
+if [ -z "$remotedir" ]; then echo "The remote directory is not configured."; exit 1; fi
+if [ -z "$source" ]; then echo "The backup source(s) is/are not configured."; exit 1; fi
 
 #Create target directory
 date=$( date +%Y%m%d-%H%M%S )
