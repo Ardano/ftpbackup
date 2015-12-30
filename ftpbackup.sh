@@ -15,17 +15,26 @@ else
 fi
     
 #Check for Software and Variables
-command -v lftp > /dev/null 2>&1 || { echo >&2 "lftp is required, but it's not installed. Aborting"; exit 1; }
+command -v curl > /dev/null 2>&1 || { echo >&2 "curl is required, but it's not installed. Aborting"; exit 1; }
+command -v tar > /dev/null 2>&1 || { echo >&2 "tar is required, but it's not installed. Aborting"; exit 1; }
 
-if [[ $* == "--gzip" ]]
+if [[ $* == *"--gzip"* ]]
 then
     command -v pigz > /dev/null 2>&1 || { echo >&2 "pigz is required, but it's not installed. Aborting"; exit 1; }
-elif [[ $* == "--bzip2" ]]
+elif [[ $* == *"--bzip2"* ]]
 then
     command -v pbzip2 > /dev/null 2>&1 || { echo >&2 "pbzip2 is required, but it's not installed. Aborting"; exit 1; }
 fi
 
+if [[ $* == *"--encrypt"* ]]
+then
+    command -v gpg2 > /dev/null 2>&1 || {echo >&2 "gpg2 is required, but it's not installed. Aborting" exit 1; }
+    command -v find > /dev/null 2>&1 || {echo >&2 "find is required, but it's not installed. Aborting" exit 1; }
+    if [ -z "$key" ]; then echo "No email or key id configured."; exit 1; fi
+fi
+
 if [ -z "$host" ]; then echo "The host is not configured."; exit 1; fi
+if [ -z "$port" ]; then echo "The port is not configured."; exit 1; fi
 if [ -z "$protocol" ]; then echo "The protocol is not configured."; exit 1; fi
 if [ -z "$user" ]; then echo "The user is not configured."; exit 1; fi
 if [ -z "$password" ]; then echo "The password is not configured."; exit 1; fi
@@ -51,6 +60,15 @@ elif [[ $* == *"--bzip2"* ]]
 then
     tar -cf - $localdir/$date | pbzip2 -c > $localdir/$date.tar.bz2
     rm -R $localdir/$date
+else
+    tar -cf - $localdir/$date > $localdir/$date.tar
+    rm -R $localdir/$date
+fi
+
+if [[ $* == *"--encrypt"* ]]
+then
+    gpg2 --encrypt --recipient $key $localdir/$date.*
+    find $localdir -type f ! -name '*.gpg' -exec rm {} + 
 fi
 
 #Sync Backup
@@ -58,5 +76,5 @@ if [[ $* == *"--nosync"* ]]
 then
     exit 0
 else
-    lftp -c "mirror -R $localdir $remotedir" -u $user,$password $protocol://$host
+   curl -T $localdir/$date.* -u $user:$password $protocol://$host:$port/$remotedir
 fi

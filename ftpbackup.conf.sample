@@ -1,7 +1,9 @@
 #!/bin/sh
 
+#General Settings
+protocol="ftp"
 host="ftp.example.com"
-protocol="ftps"
+port=21
 user="user"
 password="password"
 
@@ -9,3 +11,7 @@ localdir="/Backup"
 remotedir="/Backup"
 
 source=( "/etc/source" "/var/log/source" )
+
+
+#Encryption Settings
+key="user@example.com"  #You can supply an email or a key id here
