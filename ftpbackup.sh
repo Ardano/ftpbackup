@@ -68,7 +68,7 @@ fi
 if [[ $* == *"--encrypt"* ]]
 then
     gpg2 --encrypt --recipient $key $localdir/$date.*
-    find $localdir -type f ! -name '*.gpg' -exec rm {} + 
+    find $localdir -type f ! -name $date'.*.gpg' -name $date'.*' -exec rm {} + 
 fi
 
 #Sync Backup
