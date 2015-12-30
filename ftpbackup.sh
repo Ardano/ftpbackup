@@ -35,7 +35,6 @@ fi
 
 if [ -z "$host" ]; then echo "The host is not configured."; exit 1; fi
 if [ -z "$port" ]; then echo "The port is not configured."; exit 1; fi
-if [ -z "$protocol" ]; then echo "The protocol is not configured."; exit 1; fi
 if [ -z "$user" ]; then echo "The user is not configured."; exit 1; fi
 if [ -z "$password" ]; then echo "The password is not configured."; exit 1; fi
 if [ -z "$localdir" ]; then echo "The local directory is not configured."; exit 1; fi
@@ -78,9 +77,9 @@ then
 else
     lftp <<EOF
         $connoption
-        open $protocol://$host:$port
+        open $host $port
         user $user $password
         mirror -Rp /Backup /atlantis
         bye
-    EOF
+EOF
 fi
