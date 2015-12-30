@@ -15,7 +15,7 @@ else
 fi
     
 #Check for Software and Variables
-command -v curl > /dev/null 2>&1 || { echo >&2 "curl is required, but it's not installed. Aborting"; exit 1; }
+command -v lftp > /dev/null 2>&1 || { echo >&2 "lftp is required, but it's not installed. Aborting"; exit 1; }
 command -v tar > /dev/null 2>&1 || { echo >&2 "tar is required, but it's not installed. Aborting"; exit 1; }
 
 if [[ $* == *"--gzip"* ]]
@@ -76,5 +76,11 @@ if [[ $* == *"--nosync"* ]]
 then
     exit 0
 else
-   curl -T $localdir/$date.* -u $user:$password $protocol://$host:$port/$remotedir
+    lftp <<EOF
+        $connoption
+        open $protocol://$host:$port
+        user $user $password
+        mirror -Rp /Backup /atlantis
+        bye
+    EOF
 fi

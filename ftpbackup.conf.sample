@@ -12,6 +12,7 @@ remotedir="/Backup"
 
 source=( "/etc/source" "/var/log/source" )
 
+connoption="set xy:z true"
 
 #Encryption Settings
 key="user@example.com"  #You can supply an email or a key id here
