@@ -28,8 +28,8 @@ fi
 
 if [[ $* == *"--encrypt"* ]]
 then
-    command -v gpg2 > /dev/null 2>&1 || {echo >&2 "gpg2 is required, but it's not installed. Aborting" exit 1; }
-    command -v find > /dev/null 2>&1 || {echo >&2 "find is required, but it's not installed. Aborting" exit 1; }
+    command -v gpg2 > /dev/null 2>&1 || { echo >&2 "gpg2 is required, but it's not installed. Aborting" exit 1; }
+    command -v find > /dev/null 2>&1 || { echo >&2 "find is required, but it's not installed. Aborting" exit 1; }
     if [ -z "$key" ]; then echo "No email or key id configured."; exit 1; fi
 fi
 
