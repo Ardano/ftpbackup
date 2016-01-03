@@ -79,7 +79,7 @@ else
         $connoption
         open $host $port
         user $user $password
-        mirror -Rp /Backup /atlantis
+        mirror -Rp $localdir $remotedir
         bye
 EOF
 fi
