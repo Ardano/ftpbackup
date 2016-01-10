@@ -1,17 +1,24 @@
 #!/bin/sh
 
-#General Settings
+# General Settings
 host="ftp.example.com"
 port=21
 user="user"
 password="password"
+connoption="set xy:z true"
 
 localdir="/Backup"
 remotedir="/Backup"
 
-source=( "/etc/source" "/var/log/source" )
+# Files and/or directories you want to backup
+# Recommended to provide the full path
+sources=( "/etc/source" "/var/log/source" )
 
-connoption="set xy:z true"
+# Files and/or directories you want to exclude from the backup
+# If you want to exclude a whole directory, make sure to leave out the slash at the end
+# Recommended to provide the full path
+excludes=( "/etc/source/unwanted-directory" )
 
-#Encryption Settings
-key="user@example.com"  #You can supply an email or a key id here
+# Encryption Settings
+# You can supply an email address or a key id here
+key="user@example.com"

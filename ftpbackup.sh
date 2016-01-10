@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#Config Preamble
+# Config preamble
 workdir=$(dirname $(realpath -s $0))
 cd $workdir
 
@@ -14,7 +14,7 @@ else
     echo "No config file found. Please create one in $(basename $0 .sh).conf"
 fi
     
-#Check for Software and Variables
+# Check for software and variables
 command -v lftp > /dev/null 2>&1 || { echo >&2 "lftp is required, but it's not installed. Aborting"; exit 1; }
 command -v tar > /dev/null 2>&1 || { echo >&2 "tar is required, but it's not installed. Aborting"; exit 1; }
 
@@ -39,23 +39,21 @@ if [ -z "$user" ]; then echo "The user is not configured."; exit 1; fi
 if [ -z "$password" ]; then echo "The password is not configured."; exit 1; fi
 if [ -z "$localdir" ]; then echo "The local directory is not configured."; exit 1; fi
 if [ -z "$remotedir" ]; then echo "The remote directory is not configured."; exit 1; fi
-if [ ${#source[@]} -eq 0 ]; then echo "The backup source(s) is/are not configured."; exit 1; fi
+if [ ${#sources[@]} -eq 0 ]; then echo "The backup sources(s) is/are not configured."; exit 1; fi
 
-#Create target directory
+# Create target directory
 date=$( date +%Y%m%d-%H%M%S )
-mkdir -p $localdir/$date
-
-#Copy Backup Files
-for i in "${source[@]}"; do
-    cp -R $i $localdir/$date
-done
+mkdir -p $localdir
 
 # Write backup information text file
-info_file="$localdir/$date/info.txt"
+info_file="info.txt"
+cd $localdir
+
 cat > "$info_file" <<EOF
 Timestamp: $(date "+%Y-%m-%d %H-%M-%S")
 Parameters: $*
-Sources: ${source[@]}
+Sources: ${sources[@]}
+Excludes: ${excludes[@]}
 Local directory: $localdir
 EOF
 
@@ -69,19 +67,43 @@ User: $user
 EOF
 fi
 
-#Compression and Encryption
+# Build tar arguments
+tar_args="$info_file"
+
+# Append all source paths
+for i in "${sources[@]}"; do
+    tar_args="$tar_args $i"
+done
+
+# Append all exclude arguments
+for i in "${excludes[@]}"; do
+    tar_args="$tar_args --exclude=$i"
+done
+
+if [[ $* == *"--totals"* ]]
+then
+    tar_args="$tar_args --totals"
+fi
+
+# Compression and encryption
 if [[ $* == *"--gzip"* ]]
 then
-    tar -cf - $localdir/$date | pigz -c > $localdir/$date.tar.gz
-    rm -R $localdir/$date
+    target_file=$localdir/$date.tar.gz
+    echo "Creating gzip-compressed backup at $target_file"
+    tar -cf - $tar_args | pigz -c > $target_file
 elif [[ $* == *"--bzip2"* ]]
 then
-    tar -cf - $localdir/$date | pbzip2 -c > $localdir/$date.tar.bz2
-    rm -R $localdir/$date
+    target_file=$localdir/$date.tar.bz2
+    echo "Creating bzip2-compressed backup at $target_file"
+    tar -cf - $tar_args | pbzip2 -c > $target_file
 else
-    tar -cf - $localdir/$date > $localdir/$date.tar
-    rm -R $localdir/$date
+    target_file=$target_dir/$date.tar
+    echo "Creating backup at $target_file"
+    tar -cf $target_file $tar_args
 fi
+
+rm $info_file
+cd $workdir
 
 if [[ $* == *"--encrypt"* ]]
 then
@@ -89,7 +111,7 @@ then
     find $localdir -type f ! -name $date'.*.gpg' -name $date'.*' -exec rm {} + 
 fi
 
-#Sync Backup
+# Sync backup
 if [[ $* == *"--nosync"* ]]
 then
     exit 0
