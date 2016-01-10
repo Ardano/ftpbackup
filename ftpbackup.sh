@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #Config Preamble
 workdir=$(dirname $(realpath -s $0))
@@ -49,6 +49,25 @@ mkdir -p $localdir/$date
 for i in "${source[@]}"; do
     cp -R $i $localdir/$date
 done
+
+# Write backup information text file
+info_file="$localdir/$date/info.txt"
+cat > "$info_file" <<EOF
+Timestamp: $(date "+%Y-%m-%d %H-%M-%S")
+Parameters: $*
+Sources: ${source[@]}
+Local directory: $localdir
+EOF
+
+if ! [[ $* == *"--nosync"* ]]
+then
+cat >> $info_file <<EOF
+Remote directory: $remotedir
+Host: $host
+Port: $port
+User: $user
+EOF
+fi
 
 #Compression and Encryption
 if [[ $* == *"--gzip"* ]]
