@@ -39,7 +39,7 @@ if [ -z "$user" ]; then echo "The user is not configured."; exit 1; fi
 if [ -z "$password" ]; then echo "The password is not configured."; exit 1; fi
 if [ -z "$localdir" ]; then echo "The local directory is not configured."; exit 1; fi
 if [ -z "$remotedir" ]; then echo "The remote directory is not configured."; exit 1; fi
-if [ ${#sources[@]} -eq 0 ]; then echo "The backup sources(s) is/are not configured."; exit 1; fi
+if [ ${#sources[@]} -eq 0 ]; then echo "The backup source(s) is/are not configured."; exit 1; fi
 
 # Create target directory
 date=$( date +%Y%m%d-%H%M%S )
