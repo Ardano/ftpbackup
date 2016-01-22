@@ -66,7 +66,7 @@ if [ $amount -ne 0 ]; then
     fileCount=$(ls -1 $localdir | wc -l)
     if [ $fileCount -ge $amount ]; then
         toDelete=$(expr $fileCount - $amount + 1)
-        rm $(find $localdir -maxdepth 1 -type f | soft -g | head -n $toDelete)
+        rm $(find $localdir -maxdepth 1 -type f | sort -g | head -n $toDelete)
     fi
 fi
 
