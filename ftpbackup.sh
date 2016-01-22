@@ -47,7 +47,7 @@ if [ ! -d $localdir ]; then
     mkdir -p $localdir
 fi
 
-for directory in ${excludes[@]} do
+for directory in ${excludes[@]}; do
     if [ ! -d $directory ]; then
         echo >&2 "$directory is not existing, but configured as an excluded directory. Exiting."
         exit 1
@@ -60,6 +60,15 @@ for directory in ${sources[@]}; do
         exit 1
     fi
 done
+
+# Check backup history
+if [[ $amount != 0 ]]; then
+    fileCount=$(ls -1 $localdir | wc -l)
+    if [[ $fileCount >= $amount ]]; then
+        toDelete=$(expr $fileCount - $amount + 1)
+        rm $(find -maxdepth 1 -type f | soft -g | head -n $toDelete)
+    fi
+fi
 
 # Create target directory
 date=$( date +%Y%m%d-%H%M%S )
