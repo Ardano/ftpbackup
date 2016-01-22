@@ -47,18 +47,22 @@ if [ ! -d $localdir ]; then
     mkdir -p $localdir
 fi
 
-for directory in ${excludes[@]}; do
-    if [ ! -d $directory ]; then
-        echo >&2 "$directory is not existing, but configured as an excluded directory. Exiting."
-        exit 1
-    fi
+for exclude in ${excludes[@]}; do
+    for directory in $exclude; do
+        if [ ! -d $directory ]; then
+                echo >&2 "$directory is not existing, but configured as an excluded directory. Exiting."
+            exit 1
+        fi
+    done
 done
 
-for directory in ${sources[@]}; do
-    if [ ! -d $directory ]; then
-        echo >2& "$directory is not existing, but configured as a source directory. Exiting."
-        exit 1
-    fi
+for source in ${sources[@]}; do
+    for directory in $exclude; do
+        if [ ! -d $directory ]; then
+            echo >2& "$directory is not existing, but configured as a source directory. Exiting."
+            exit 1
+        fi
+    done
 done
 
 # Check backup history
