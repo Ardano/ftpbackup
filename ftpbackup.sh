@@ -62,9 +62,9 @@ for directory in ${sources[@]}; do
 done
 
 # Check backup history
-if [[ $amount != 0 ]]; then
+if [ $amount -ne 0 ]; then
     fileCount=$(ls -1 $localdir | wc -l)
-    if [[ $fileCount >= $amount ]]; then
+    if [ $fileCount -ge $amount ]; then
         toDelete=$(expr $fileCount - $amount + 1)
         rm $(find $localdir -maxdepth 1 -type f | soft -g | head -n $toDelete)
     fi
