@@ -13,28 +13,53 @@ else
 fi
     
 # Check for software and variables
-command -v lftp > /dev/null 2>&1 || { echo >&2 "lftp is required, but it's not installed. Aborting"; exit 1; }
-command -v tar > /dev/null 2>&1 || { echo >&2 "tar is required, but it's not installed. Aborting"; exit 1; }
+softwarecheck=( "lftp" "tar" )
+configcheck=( "host" "port" "user" "password" "localdir" "remotedir" "sources" "amount" )
 
 if [[ $* == *"--gzip"* ]]; then
-    command -v pigz > /dev/null 2>&1 || { echo >&2 "pigz is required, but it's not installed. Aborting"; exit 1; }
+    softwarecheck=( ${softwarecheck[@]} "pigz" )
 elif [[ $* == *"--bzip2"* ]]; then
-    command -v pbzip2 > /dev/null 2>&1 || { echo >&2 "pbzip2 is required, but it's not installed. Aborting"; exit 1; }
+    softwarecheck=( ${softwarecheck[@]} "pbzip2" )
 fi
 
 if [[ $* == *"--encrypt"* ]]; then
-    command -v gpg2 > /dev/null 2>&1 || { echo >&2 "gpg2 is required, but it's not installed. Aborting" exit 1; }
-    command -v find > /dev/null 2>&1 || { echo >&2 "find is required, but it's not installed. Aborting" exit 1; }
-    if [ -z "$key" ]; then echo "No email or key id configured."; exit 1; fi
+    softwarecheck=( ${softwarecheck[@]} "gpg2" "find" )
+    configcheck=( ${configcheck[@]} "key")
 fi
 
-if [ -z "$host" ]; then echo "The host is not configured."; exit 1; fi
-if [ -z "$port" ]; then echo "The port is not configured."; exit 1; fi
-if [ -z "$user" ]; then echo "The user is not configured."; exit 1; fi
-if [ -z "$password" ]; then echo "The password is not configured."; exit 1; fi
-if [ -z "$localdir" ]; then echo "The local directory is not configured."; exit 1; fi
-if [ -z "$remotedir" ]; then echo "The remote directory is not configured."; exit 1; fi
-if [ ${#sources[@]} -eq 0 ]; then echo "The backup source(s) is/are not configured."; exit 1; fi
+for software in ${softwarecheck[@]}; do
+    if [ -z $(command -v $software) ]; then
+        echo 2>&1 "$software is required, but it's not installed. Exiting."
+        exit 1;
+    fi
+done
+
+for option in ${configcheck[@]}; do
+    if [ -z "$option" ]; then
+        echo >&2 "$option is not configured. Exiting.";
+        exit 1;
+    fi
+done
+
+# Check directories
+if [ ! -d $localdir ]; then
+    echo >&2 "The local backup directory is not existent, creating $localdir"
+    mkdir -p $localdir
+fi
+
+for directory in ${excludes[@]} do
+    if [ ! -d $directory ]; then
+        echo >&2 "$directory is not existing, but configured as an excluded directory. Exiting."
+        exit 1
+    fi
+done
+
+for directory in ${sources[@]}; do
+    if [ ! -d $directory ]; then
+        echo >2& "$directory is not existing, but configured as a source directory. Exiting."
+        exit 1
+    fi
+done
 
 # Create target directory
 date=$( date +%Y%m%d-%H%M%S )

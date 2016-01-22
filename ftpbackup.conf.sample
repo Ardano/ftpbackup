@@ -22,3 +22,7 @@ excludes=( "/etc/source/unwanted-directory" )
 # Encryption Settings
 # You can supply an email address or a key id here
 key="user@example.com"
+
+# Storage Settings
+# Keep as much files as there are with 0, or less with a configured amount
+amount=0
