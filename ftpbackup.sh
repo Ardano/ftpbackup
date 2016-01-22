@@ -122,7 +122,7 @@ elif [[ $* == *"--bzip2"* ]]; then
     echo "Creating bzip2-compressed backup at $target_file"
     tar -cf - $tar_args | pbzip2 -c > $target_file
 else
-    target_file=$target_dir/$date.tar
+    target_file=$localdir/$date.tar
     echo "Creating backup at $target_file"
     tar -cf $target_file $tar_args
 fi
