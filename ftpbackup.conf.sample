@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # General Settings
 host="ftp.example.com"
 port=21
