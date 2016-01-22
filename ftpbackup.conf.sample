@@ -22,5 +22,5 @@ excludes=( "/etc/source/unwanted-directory" )
 key="user@example.com"
 
 # Storage Settings
-# Keep as much files as there are with 0, or less with a configured amount
+# Keep unlimited files with 0, or less with a configured amount
 amount=0
