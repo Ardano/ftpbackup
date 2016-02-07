@@ -147,7 +147,7 @@ else
         $connoption
         open $host $port
         user $user $password
-        mirror --reverse --no-perms --delete $localdir $remotedir
+        mirror --reverse --no-perms --delete --delete-first $localdir $remotedir
         bye
 EOF
 fi
