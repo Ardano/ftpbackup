@@ -9,8 +9,10 @@ if [ -e "$configPath/ftpbackup.conf" ]; then
     source $configPath/ftpbackup.conf
 elif [ -e "$configPath/ftpbackup.conf.sample" ]; then
     echo "Please edit the sample config for your needs and move it to $configPath/ftpbackup.conf"
+    exit 1
 else
     echo "No config file or sample config found. Please create one in $configPath/ftpbackup.conf, a sample config can normally be optained from your distributor or upstream source"
+    exit 1
 fi
     
 # Check the config 
