@@ -1,0 +1,22 @@
+.TH ftpbackup 1 "2 April 2016"
+.SH NAME
+ftpbackup \- Simple ftp backup client
+
+.SH SYNOPSIS
+.B ftpbackup
+[options]
+
+.SH OPTIONS
+.TP
+.BR \-\-bzip2
+Compress the backup with bzip2
+.TP
+.BR \-\-encrypt
+Encrypt the backup with gpg2, the key is supplied via the gpg2 keyring
+.TP
+.BR \-\-gzip
+Compress the backup with gzip
+.TP
+.BR \-\-nosync
+Skip the file sync between the local backup directory and the configured ftp server
+
