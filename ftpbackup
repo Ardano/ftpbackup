@@ -1,38 +1,24 @@
 #!/bin/bash
 
-# Config preamble
-workdir=$(dirname $(realpath -s $0))
-cd $workdir
+# Location of the binary and config, change for different packaging
+binPath=/usr/bin
+configPath=/etc/ftpbackup
 
-if [ -e "$workdir/$(basename $0 .sh).conf" ]; then
-    source $workdir/$(basename $0 .sh).conf
-elif [ -e "$workdir/$(basename $0 .sh).conf.sample" ]; then
-    echo "Please edit the sample config for your needs and move it to $(basename $0 .sh).conf"
+# Preamble
+if [ -e "$configPath/ftpbackup.conf" ]; then
+    source $configPath/ftpbackup.conf
+elif [ -e "$configPath/ftpbackup.conf.sample" ]; then
+    echo "Please edit the sample config for your needs and move it to $configPath/ftpbackup.conf"
 else
-    echo "No config file found. Please create one in $(basename $0 .sh).conf"
+    echo "No config file or sample config found. Please create one in $configPath/ftpbackup.conf, a sample config can normally be optained from your distributor or upstream source"
 fi
     
-# Check for software and variables
-softwarecheck=( "lftp" "tar" )
+# Check the config 
 configcheck=( "host" "port" "user" "password" "localdir" "remotedir" "sources" "amount" )
 
-if [[ $* == *"--gzip"* ]]; then
-    softwarecheck=( ${softwarecheck[@]} "pigz" )
-elif [[ $* == *"--bzip2"* ]]; then
-    softwarecheck=( ${softwarecheck[@]} "pbzip2" )
-fi
-
 if [[ $* == *"--encrypt"* ]]; then
-    softwarecheck=( ${softwarecheck[@]} "gpg2" "find" )
     configcheck=( ${configcheck[@]} "key")
 fi
-
-for software in ${softwarecheck[@]}; do
-    if [ -z $(command -v $software) ]; then
-        echo 2>&1 "$software is required, but it's not installed. Exiting."
-        exit 1;
-    fi
-done
 
 for option in ${configcheck[@]}; do
     if [ -z "$option" ]; then
